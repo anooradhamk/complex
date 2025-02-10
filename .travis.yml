@@ -9,13 +9,13 @@ before_install:
 script:
   - docker run -e CI=True anooradhamk/complex-react npm test
 after_success:
-  after_success:
-  - if [ -n "$DOCKER_PASSWORD" ]; then
-      echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin;
-      docker push anooradhamk/multi-client;
-      docker push anooradhamk/multi-nginx;
-      docker push anooradhamk/multi-server;
-      docker push anooradhamk/multi-worker;
-    else
-      echo "DOCKER_PASSWORD is empty! Check Travis CI settings.";
-    fi
+  - docker build -t anooradhamk/multi-client ./client
+  - docker build -t anooradhamk/multi-nginx ./nginx
+  - docker build -t anooradhamk/multi-server ./server
+  - docker build -t anooradhamk/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  
+  - docker push anooradhamk/multi-client
+  - docker push anooradhamk/multi-nginx
+  - docker push anooradhamk/multi-server
+  - docker push anooradhamk/multi-worker
